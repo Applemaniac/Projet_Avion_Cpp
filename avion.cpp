@@ -7,9 +7,8 @@
 
 using namespace std::chrono_literals;
 
-std::map<std::string, Avion*> Avion::avions;
-
-Avion::Avion() : m_stop_thread(true),
+Avion::Avion() : m_callApp(true),
+                 m_stop_thread(true),
                  m_identifiant(Avion::createIdentifiant()),
                  m_position(new Position),
                  m_depart(new Aeroport),
@@ -25,6 +24,7 @@ Avion::Avion() : m_stop_thread(true),
 
 Avion::Avion(Aeroport *depart, Aeroport *arrive, bool &stop) :
                                                    m_identifiant(Avion::createIdentifiant()),
+                                                   m_callApp(false),
                                                    m_position(createPosition(depart->getPosition()->x, depart->getPosition()->y, depart->getPosition()->z)),
                                                    m_depart(depart),
                                                    m_arrive(arrive),
@@ -78,15 +78,16 @@ std::string Avion::createIdentifiant() {
   }
 
   std::string id = code + std::to_string(nb);
-  if (!Avion::avions.empty()) {
-    if (Avion::avions.find(id) == Avion::avions.end()) {
-      Avion::avions.insert({id, this});
-    }else{
-      Avion::createIdentifiant();
+  if (!Ccr::avions.empty()) {
+    for (Avion *avion : Ccr::avions){
+      if (id == avion->getIdentifiant()){
+        Avion::createIdentifiant();
+      }
     }
+    Ccr::avions.push_back(this);
     return id;
   }else{
-    Avion::avions.insert({id, this});
+    Ccr::avions.push_back(this);
     return id;
   }
 }
@@ -107,24 +108,28 @@ void Avion::atterrirDansAeroport(Aeroport *aeroport) {
 }
 
 void Avion::fly(bool &stop) {
-  while (!stop){
+  while (!stop && !(this->m_callApp)){
     std::time_t now = time(0);
     std::time_t duree = now - this->m_deltaDate; //en s
     float deltaDistance = (this->m_vitesse * duree) / 1000;
     getTrajectoire(this->m_position, this->m_arrive->getPosition(), deltaDistance, this->m_distance);
     this->m_deltaDate = now;
+    Ccr::ccrMutex.lock();
     std::cout << "x : " << this->m_position->x << " y = " << this->m_position->y << " z = " << this->m_position->z << std::endl;
+    Ccr::ccrMutex.unlock();
 
     if (this->m_arrive->getPosition()->x - this->m_position->x < RADIUS_APP && this->getPosition()->y - this->m_position->y < RADIUS_APP && this->getPosition()->z - this->m_position->z < RADIUS_APP){
-      std::cout << this->m_identifiant << " POUR APP DE " << this->m_arrive->getIdentifiant() << std::endl;
-      stop = true;
+      Ccr::ccrMutex.lock();
+      std::cout << this->m_identifiant << " -> APP de " << this->m_arrive->getIdentifiant() << " : Je rentre dans votre zone." << std::endl;
+      Ccr::ccrMutex.unlock();
+      this->m_callApp = true;
     }
 
     std::this_thread::sleep_for(1s);
   }
 }
 
-void flyThread(Avion *avion, bool &stop_thread) {
+void Avion::flyThread(Avion *avion, bool &stop_thread) {
   while (!stop_thread)
   {
     avion->fly(stop_thread);
@@ -136,6 +141,14 @@ Avion::~Avion() {
   this->m_thread.join();
 
   delete m_position;
+}
+
+bool Avion::getApp() {
+  return this->m_callApp;
+}
+
+Aeroport *Avion::getDestination() {
+  return this->m_arrive;
 }
 
 

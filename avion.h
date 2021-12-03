@@ -4,7 +4,9 @@
 #include <map>
 #include <cstdlib>
 #include <thread>
+#include <mutex>
 #include "aeroport.h"
+#include "ccr.h"
 
 #define RADIUS_APP 10
 
@@ -12,9 +14,10 @@ class Aeroport;
 
 class Avion {
 private:
-    static std::map<std::string, Avion*> avions;
     std::thread m_thread;
+    std::mutex globalMutex;
     bool m_stop_thread;
+    bool m_callApp;
     std::string m_identifiant;
     Position *m_position;
     Aeroport *m_depart;
@@ -24,6 +27,7 @@ private:
     time_t m_deltaDate;
     float m_distance; // en km/h
     float m_essence;
+    void fly(bool&);
 public:
     Avion();
     ~Avion();
@@ -31,8 +35,9 @@ public:
     std::string createIdentifiant();
     std::string getIdentifiant();
     Position* getPosition();
+    Aeroport* getDestination();
     void atterrirDansAeroport(Aeroport*);
-    void fly(bool&);
+    static void flyThread(Avion*, bool&);
+    bool getApp();
 };
 
-void flyThread(Avion*, bool&);

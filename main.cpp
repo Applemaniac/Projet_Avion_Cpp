@@ -2,7 +2,6 @@
 
 using namespace std::chrono_literals;
 
-
 void add_plane_sometimes(bool &stop_thread)
 {
   while (!stop_thread)
@@ -14,15 +13,17 @@ void add_plane_sometimes(bool &stop_thread)
 }
 
 int main() {
-
-  auto *lille = new Aeroport("Lille", {10, 0, 0}, 10);
-  auto *marseille = new Aeroport("Marseille", {20, 20, 0}, 10);
+  bool threadLille = true;
+  bool threadMarseille = true;
+  bool threadCcr = true;
+  auto *ccr = new Ccr();
+  auto *lille = new Aeroport("Lille", {10, 0, 0}, 10, threadLille);
+  auto *marseille = new Aeroport("Marseille", {20, 20, 0}, 10, threadMarseille);
 
   bool stop_thread = false;
   auto *avion = new Avion(lille, marseille, stop_thread);
 
   //std::thread avion_thread(add_plane_sometimes, std::ref(stop_thread));
-  //std::thread avion_thread(&Avion::fly, avion, std::ref(stop_thread));
 
   while (1)
   {
@@ -32,7 +33,6 @@ int main() {
 
   }
 
-  //avion_thread.join();
   delete avion;
   delete lille;
   delete marseille;
