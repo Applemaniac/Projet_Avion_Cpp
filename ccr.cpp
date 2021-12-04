@@ -1,7 +1,8 @@
 #include "ccr.h"
 #include <iostream>
 
-std::mutex Ccr::ccrMutex;
+std::mutex Ccr::coutMutex;
+std::mutex Ccr::avionsMutex;
 std::vector<Avion*> Ccr::avions;
 
 Ccr::Ccr(){
@@ -14,23 +15,25 @@ Ccr::~Ccr(){
 }
 
 void Ccr::thread(bool &stop_thread){
-  ccrMutex.lock();
+  coutMutex.lock();
   std::cout << "Centre de contrôle régional -> ALL : Je prends mon service." << std::endl;
-  ccrMutex.unlock();
+  coutMutex.unlock();
 
   while (!stop_thread){
-    for (Avion *avion : avions){
-      if(avion->getApp()){
+    for (int i = 0; i < Ccr::avions.size(); i++){
+      if(Ccr::avions[i]->getApp()){
         // Ajouts de l'élément dans le tableau de l'aeroport
-        avion->getDestination()->getAvions().push_back(avion);
+        Ccr::avions[i]->getDestination()->getAvions().push_back(Ccr::avions[i]);
         // Suppression de l'avion de le tableau du CCR
+        Ccr::avions.erase(Ccr::avions.begin() + i);
+
       }
     }
   }
 
-  ccrMutex.lock();
+  coutMutex.lock();
   std::cout << "Centre de contrôle régional -> ALL : Je quitte mon service." << std::endl;
-  ccrMutex.unlock();
+  coutMutex.unlock();
 
 }
 

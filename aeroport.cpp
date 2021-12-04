@@ -48,31 +48,24 @@ bool Aeroport::autorisationPourAtterrir() const {
 }*/
 
 void Aeroport::centreApproche(bool &stop) {
-  Ccr::ccrMutex.lock();
+  Ccr::coutMutex.lock();
   std::cout << "ICI le centre de contrôle d'approche de " << this->m_identifiant << ", je prends mon service." << std::endl;
-  Ccr::ccrMutex.unlock();
+  Ccr::coutMutex.unlock();
   while (stop){
-  /*  if (!Ccr::avions.empty()) {
-      for (const auto&[key, value]: Ccr::avions) {
-        if (key != "") {
-          if (value->getApp() && value->getDestination() == this) {
-            Ccr::ccrMutex.lock();
-            std::cout << "APP de " << this->m_identifiant << " -> " << key << " : Bien reçu, je vous prends en charge."
-                      << std::endl;
-            std::cout << "APP de " << this->m_identifiant << " -> CCR : " << key
-                      << " rentre dans ma zone de contrôle, je prends le relais !" << std::endl;
-            Ccr::ccrMutex.unlock();
-            m_avions.insert({key, value});
-            Ccr::avions.erase(key);
-          }
+    if(!this->m_avions.empty()){
+      for(int i = 0; i < this->m_avions.size(); i++){
+        if (this->m_avions[i]->getApp()){
+          std::cout << "APP de " << this->m_identifiant << " -> " << this->m_avions[i]->getIdentifiant() << " : Je vous prends en charge !" << std::endl;
+          this->m_avions[i]->setApp(false);
+        }else{
+          // On va te faire atterire bebe !
         }
-        std::cout << "C'est vide" << std::endl;
       }
-    }*/
+    }
   }
-  Ccr::ccrMutex.lock();
+  Ccr::coutMutex.lock();
   std::cout << "ICI le centre de contrôle d'approche de " << this->m_identifiant << ", je finis mon service." << std::endl;
-  Ccr::ccrMutex.unlock();
+  Ccr::coutMutex.unlock();
 }
 
 Aeroport::~Aeroport() {
@@ -86,7 +79,7 @@ void Aeroport::threadApp(Aeroport *aeroport, bool &stop) {
   aeroport->centreApproche(stop);
 }
 
-std::vector<Avion *> Aeroport::getAvions() {
+std::vector<Avion*>& Aeroport::getAvions() {
   return this->m_avions;
 }
 

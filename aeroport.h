@@ -22,7 +22,7 @@ public:
     Aeroport(std::string, Position, int, bool&);
     Position* getPosition();
     std::string getIdentifiant();
-    std::vector<Avion*> getAvions();
+    std::vector<Avion*>& getAvions();
     bool autorisationPourAtterrir() const;
     //bool atterrir(Avion*);
     void centreApproche(bool&);

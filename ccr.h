@@ -15,7 +15,8 @@ private:
 public:
     Ccr();
     ~Ccr();
-    static std::mutex ccrMutex;
+    static std::mutex coutMutex;
+    static std::mutex avionsMutex;
     static std::vector<Avion*> avions;
     static void CcrThread(Ccr*, bool&);
 };

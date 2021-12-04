@@ -114,14 +114,14 @@ void Avion::fly(bool &stop) {
     float deltaDistance = (this->m_vitesse * duree) / 1000;
     getTrajectoire(this->m_position, this->m_arrive->getPosition(), deltaDistance, this->m_distance);
     this->m_deltaDate = now;
-    Ccr::ccrMutex.lock();
+    Ccr::coutMutex.lock();
     std::cout << "x : " << this->m_position->x << " y = " << this->m_position->y << " z = " << this->m_position->z << std::endl;
-    Ccr::ccrMutex.unlock();
+    Ccr::coutMutex.unlock();
 
     if (this->m_arrive->getPosition()->x - this->m_position->x < RADIUS_APP && this->getPosition()->y - this->m_position->y < RADIUS_APP && this->getPosition()->z - this->m_position->z < RADIUS_APP){
-      Ccr::ccrMutex.lock();
+      Ccr::coutMutex.lock();
       std::cout << this->m_identifiant << " -> APP de " << this->m_arrive->getIdentifiant() << " : Je rentre dans votre zone." << std::endl;
-      Ccr::ccrMutex.unlock();
+      Ccr::coutMutex.unlock();
       this->m_callApp = true;
     }
 
@@ -149,6 +149,10 @@ bool Avion::getApp() {
 
 Aeroport *Avion::getDestination() {
   return this->m_arrive;
+}
+
+void Avion::setApp(bool value) {
+  this->m_callApp = value;
 }
 
 

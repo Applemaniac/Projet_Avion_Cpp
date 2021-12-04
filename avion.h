@@ -39,5 +39,6 @@ public:
     void atterrirDansAeroport(Aeroport*);
     static void flyThread(Avion*, bool&);
     bool getApp();
+    void setApp(bool);
 };
 
