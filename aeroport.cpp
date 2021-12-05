@@ -3,18 +3,23 @@
 #include "aeroport.h"
 
 Aeroport::Aeroport() : m_identifiant("Lille"),
-                       m_stop_thread(true),
+                       m_stopThreadAeroport(true),
+                       m_stopThreadTourDeControle(true),
                        m_position(createPosition(0, 0, 0)),
                        m_capacite(10),
                        m_placesDisponible(10){
+  this->m_tourDeControle = new TourDeControle(this, std::ref(m_stopThreadTourDeControle));
+  TourDeControle::createThread(m_tourDeControle, m_stopThreadTourDeControle);
 }
 
-Aeroport::Aeroport(std::string identifiant, Position pos, int capacite, bool &stop) : m_identifiant(std::move(identifiant)),
-                                                                          m_stop_thread(stop),
-                                                                          m_position(createPosition(pos.x, pos.y, pos.z)),
-                                                                          m_capacite(capacite),
-                                                                          m_placesDisponible(capacite){
-  this->m_thread = std::thread(threadApp, this, std::ref(stop));
+Aeroport::Aeroport(std::string identifiant, Position pos, int capacite, bool &stop_thread) : m_identifiant(std::move(identifiant)),
+                                                                                             m_stopThreadAeroport(stop_thread),
+                                                                                             m_stopThreadTourDeControle(stop_thread),
+                                                                                             m_position(createPosition(pos.x, pos.y, pos.z)),
+                                                                                             m_capacite(capacite),
+                                                                                             m_placesDisponible(capacite){
+  this->m_thread = std::thread(threadApp, this, std::ref(m_stopThreadAeroport));
+  this->m_tourDeControle = new TourDeControle(this, stop_thread);
 
 }
 
@@ -47,18 +52,19 @@ bool Aeroport::autorisationPourAtterrir() const {
   return atterri;
 }*/
 
-void Aeroport::centreApproche(bool &stop) {
+void Aeroport::centreApproche(bool &stop_thread) {
   Ccr::coutMutex.lock();
   std::cout << "ICI le centre de contrôle d'approche de " << this->m_identifiant << ", je prends mon service." << std::endl;
   Ccr::coutMutex.unlock();
-  while (stop){
+  while (!stop_thread){
     if(!this->m_avions.empty()){
       for(int i = 0; i < this->m_avions.size(); i++){
         if (this->m_avions[i]->getApp()){
           std::cout << "APP de " << this->m_identifiant << " -> " << this->m_avions[i]->getIdentifiant() << " : Je vous prends en charge !" << std::endl;
           this->m_avions[i]->setApp(false);
-        }else{
-          // On va te faire atterire bebe !
+          this->m_avions[i]->setFaireDesRonds(true);
+          this->m_tourDeControle->getQueuexAtterissage().push_back(this->m_avions[i]);
+          this->m_avions.erase(this->m_avions.begin() + i);
         }
       }
     }
@@ -69,7 +75,7 @@ void Aeroport::centreApproche(bool &stop) {
 }
 
 Aeroport::~Aeroport() {
-  this->m_stop_thread = true;
+  this->m_stopThreadAeroport = true;
   this->m_thread.join();
 
   delete m_position;
@@ -81,5 +87,17 @@ void Aeroport::threadApp(Aeroport *aeroport, bool &stop) {
 
 std::vector<Avion*>& Aeroport::getAvions() {
   return this->m_avions;
+}
+
+int Aeroport::getCapacite() const {
+  return this->m_capacite;
+}
+
+int Aeroport::getplaceDisponible() const {
+  return this->m_placesDisponible;
+}
+
+void Aeroport::setplaceDisponible(int value) {
+  this->m_placesDisponible = value;
 }
 

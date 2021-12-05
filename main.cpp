@@ -13,10 +13,10 @@ void add_plane_sometimes(bool &stop_thread)
 }
 
 int main() {
-  bool threadLille = true;
-  bool threadMarseille = true;
-  bool threadCcr = true;
-  auto *ccr = new Ccr();
+  bool threadLille = false;
+  bool threadMarseille = false;
+  bool threadCcr = false;
+  auto *ccr = new Ccr(threadCcr);
   auto *lille = new Aeroport("Lille", {10, 0, 0}, 10, threadLille);
   auto *marseille = new Aeroport("Marseille", {20, 20, 0}, 10, threadMarseille);
 

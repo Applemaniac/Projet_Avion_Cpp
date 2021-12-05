@@ -18,6 +18,8 @@ private:
     std::mutex globalMutex;
     bool m_stop_thread;
     bool m_callApp;
+    bool m_faireDesRonds;
+    bool m_voler;
     std::string m_identifiant;
     Position *m_position;
     Aeroport *m_depart;
@@ -36,9 +38,12 @@ public:
     std::string getIdentifiant();
     Position* getPosition();
     Aeroport* getDestination();
-    void atterrirDansAeroport(Aeroport*);
+    void atterrir(Aeroport*);
+    void decoler(Aeroport*);
     static void flyThread(Avion*, bool&);
-    bool getApp();
+    bool getApp() const;
     void setApp(bool);
+    bool getFaireDesRonds() const;
+    void setFaireDesRonds(bool);
 };
 

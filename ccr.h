@@ -14,6 +14,7 @@ private:
     static void thread(bool&);
 public:
     Ccr();
+    Ccr(bool&);
     ~Ccr();
     static std::mutex coutMutex;
     static std::mutex avionsMutex;

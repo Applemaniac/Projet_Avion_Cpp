@@ -9,6 +9,10 @@ Ccr::Ccr(){
   this->m_thread = std::thread(CcrThread, this, std::ref(m_stopThread));
 }
 
+Ccr::Ccr(bool &stop_thread) : m_stopThread(stop_thread){
+  this->m_thread = std::thread(CcrThread, this, std::ref(m_stopThread));
+}
+
 Ccr::~Ccr(){
   this->m_stopThread = true;
   this->m_thread.join();
@@ -26,7 +30,6 @@ void Ccr::thread(bool &stop_thread){
         Ccr::avions[i]->getDestination()->getAvions().push_back(Ccr::avions[i]);
         // Suppression de l'avion de le tableau du CCR
         Ccr::avions.erase(Ccr::avions.begin() + i);
-
       }
     }
   }
