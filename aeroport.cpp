@@ -54,7 +54,7 @@ bool Aeroport::autorisationPourAtterrir() const {
 
 void Aeroport::centreApproche(bool &stop_thread) {
   Ccr::coutMutex.lock();
-  std::cout << "ICI le centre de contrôle d'approche de " << this->m_identifiant << ", je prends mon service." << std::endl;
+  std::cout << "Centre de contrôle d'approche de " << this->m_identifiant << " -> ALL : je prends mon service." << std::endl;
   Ccr::coutMutex.unlock();
   while (!stop_thread){
     if(!this->m_avions.empty()){
@@ -70,7 +70,7 @@ void Aeroport::centreApproche(bool &stop_thread) {
     }
   }
   Ccr::coutMutex.lock();
-  std::cout << "ICI le centre de contrôle d'approche de " << this->m_identifiant << ", je finis mon service." << std::endl;
+  std::cout << "Centre de contrôle d'approche de " << this->m_identifiant << " -> ALL : je finis mon service." << std::endl;
   Ccr::coutMutex.unlock();
 }
 

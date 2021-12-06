@@ -12,22 +12,27 @@ void add_plane_sometimes(bool &stop_thread)
   }
 }
 
-int main() {
+int main(){
+  srand(time(NULL));
   bool threadLille = false;
   bool threadMarseille = false;
   bool threadCcr = false;
   auto *ccr = new Ccr(threadCcr);
-  auto *lille = new Aeroport("Lille", {10, 0, 0}, 10, threadLille);
-  auto *marseille = new Aeroport("Marseille", {20, 20, 0}, 10, threadMarseille);
+  auto *lille = new Aeroport("Lille", {0, 0, 0}, 10, threadLille);
+  auto *marseille = new Aeroport("Marseille", {10, 10, 0}, 10, threadMarseille);
 
   bool stop_thread = false;
   auto *avion = new Avion(lille, marseille, stop_thread);
 
-  //std::thread avion_thread(add_plane_sometimes, std::ref(stop_thread));
-
   while (1)
   {
-    if(stop_thread){
+    std::string a;
+    std::cin >> a;
+    if(a == "0"){
+      stop_thread = true;
+      threadLille = true;
+      threadMarseille = true;
+      threadCcr = true;
       break;
     }
 
@@ -36,5 +41,6 @@ int main() {
   delete avion;
   delete lille;
   delete marseille;
+  delete ccr;
   std::cout << "Finish\n";
 }

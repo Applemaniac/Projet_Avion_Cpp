@@ -107,6 +107,7 @@ Position *Avion::getPosition() {
 
 void Avion::atterrir(Aeroport *aeroport) {
   std::cout << this->m_identifiant << " a atterri à " << aeroport->getIdentifiant() << std::endl;
+  setPosition(this->m_position, this->m_arrive->getPosition()->x, this->m_arrive->getPosition()->y, this->m_arrive->getPosition()->z);
   this->m_stop_thread = false;
   this->m_faireDesRonds = false;
   this->m_voler = false;
@@ -119,7 +120,7 @@ void Avion::fly(bool &stop_thread) {
     float deltaDistance = (this->m_vitesse * duree) / 1000;
     this->m_deltaDate = now;
 
-    if (this->m_arrive->getPosition()->x - this->m_position->x < RADIUS_APP && this->getPosition()->y - this->m_position->y < RADIUS_APP && this->getPosition()->z - this->m_position->z < RADIUS_APP && !this->m_faireDesRonds && !this->m_callApp){
+    if (abs(this->m_arrive->getPosition()->x - this->m_position->x) < RADIUS_APP && abs(this->getPosition()->y - this->m_position->y) < RADIUS_APP && abs(this->getPosition()->z - this->m_position->z) < RADIUS_APP && this->m_voler && !this->m_callApp){
       Ccr::coutMutex.lock();
       std::cout << this->m_identifiant << " -> APP de " << this->m_arrive->getIdentifiant() << " : Je rentre dans votre zone." << std::endl;
       Ccr::coutMutex.unlock();

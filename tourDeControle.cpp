@@ -21,7 +21,7 @@ TourDeControle::~TourDeControle() {
 
 void TourDeControle::tourDeControle(bool &stop_thread) {
   Ccr::coutMutex.lock();
-  std::cout << "ICI Tour de contrôle de " << this->m_aeroport->getIdentifiant() << ", je prends mon service." << std::endl;
+  std::cout << "Tour de contrôle de " << this->m_aeroport->getIdentifiant() << " -> ALL :  je prends mon service." << std::endl;
   Ccr::coutMutex.unlock();
 
   while(!stop_thread){
@@ -47,7 +47,7 @@ void TourDeControle::tourDeControle(bool &stop_thread) {
   }
 
   Ccr::coutMutex.lock();
-  std::cout << "ICI Tour de contrôle de " << this->m_aeroport->getIdentifiant() << ", je finis mon service." << std::endl;
+  std::cout << "Tour de contrôle de " << this->m_aeroport->getIdentifiant() << " -> ALL : je finis mon service." << std::endl;
   Ccr::coutMutex.unlock();
 }
 

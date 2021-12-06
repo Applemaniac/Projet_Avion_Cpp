@@ -8,7 +8,7 @@
 #include "aeroport.h"
 #include "ccr.h"
 
-#define RADIUS_APP 10
+#define RADIUS_APP 1
 
 class Aeroport;
 
