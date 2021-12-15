@@ -44,7 +44,7 @@ struct Aeroport_avec_sprite : public Aeroport{
 void affichage(std::vector<Avion_avec_sprite*> &planes, std::vector<Aeroport_avec_sprite*> &aeroport, bool &stop_thread){
 
   // Fenêtre
-  sf::RenderWindow app(sf::VideoMode(WINDOW_SIZE_X, WINDOW_SIZE_Y, 32), "Trafic aerien - V1.0");
+  sf::RenderWindow app(sf::VideoMode(WINDOW_SIZE_X, WINDOW_SIZE_Y, 32), "Trafic aerien - V1.1");
 
   // Frames Per Second (FPS)
   app.setFramerateLimit(30); // limite la fenêtre à 60 images par seconde

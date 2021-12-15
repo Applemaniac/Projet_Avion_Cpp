@@ -119,15 +119,16 @@ void Avion::fly(bool &stop_thread) {
     std::time_t duree = now - this->m_deltaDate; //en s
     float deltaDistance = (this->m_vitesse * duree) / 1000;
     this->m_deltaDate = now;
+    this->m_position->z = getUniqueZ(this->getIdentifiant());
 
-    if (abs(this->m_arrive->getPosition()->x - this->m_position->x) < RADIUS_APP && abs(this->getPosition()->y - this->m_position->y) < RADIUS_APP && abs(this->getPosition()->z - this->m_position->z) < RADIUS_APP && this->m_voler && !this->m_callApp){
+    if (abs(this->m_arrive->getPosition()->x - this->m_position->x) < RADIUS_APP && abs(this->getPosition()->y - this->m_position->y) < RADIUS_APP && this->m_voler && !this->m_callApp){
       Ccr::coutMutex.lock();
       std::cout << this->m_identifiant << " -> APP de " << this->m_arrive->getIdentifiant() << " : Je rentre dans votre zone." << std::endl;
       Ccr::coutMutex.unlock();
       this->m_callApp = true;
     }else if (this->m_faireDesRonds){ // Si on est dans la zone de l'aéroport et que l'on attend d'atterrir
       // CE CODE EST POURRI MAIS JE NE SAIS COMMENT FAIRE AUTREMENT
-      Position *direction = createPosition(this->m_arrive->getPosition()->x + 10, this->m_arrive->getPosition()->y + 10, this->m_arrive->getPosition()->z);
+      Position *direction = createPosition(this->m_arrive->getPosition()->x + 10, this->m_arrive->getPosition()->y + 10,  this->m_position->z);
       if (this->m_arrive->getPosition()->x - this->m_position->x < RADIUS_APP && this->getPosition()->y - this->m_position->y < RADIUS_APP && this->getPosition()->z - this->m_position->z < RADIUS_APP){
         // On fait sortir l'avion s'il est dans la zone
         getTrajectoire(this->m_position, direction, deltaDistance, this->m_distance - 10);

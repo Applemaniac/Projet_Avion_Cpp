@@ -1,3 +1,4 @@
+#include <string>
 #include "struct.h"
 
 void setPosition(Position *pos, float x, float y, float z){
@@ -25,3 +26,10 @@ void getTrajectoire(Position *posActuel, Position *destination, float distance, 
   posActuel->z = posActuel->z + (distance/distanceTotal) * (destination->z - posActuel->z);
 }
 
+float getUniqueZ(std::string id){
+  float retour = 0;
+  for (char i : id){
+    retour += (float) i;
+  }
+  return retour;
+}
