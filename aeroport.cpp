@@ -1,5 +1,3 @@
-#include<iostream>
-#include <utility>
 #include "aeroport.h"
 
 Aeroport::Aeroport() : m_identifiant("Lille"),
@@ -38,19 +36,6 @@ bool Aeroport::autorisationPourAtterrir() const {
   }
   return retour;
 }
-
-/*bool Aeroport::atterrir(Avion *avion) {
-  bool atterri = false;
-  if(autorisationPourAtterrir()){
-    this->m_placesDisponible--;
-    Avion::avions.e(avion);
-    avion->atterrirDansAeroport(this);
-    atterri = true;
-  }else{
-    std::cout << "/!\\ AUTORISATION REFUSÉE D'ATTERRIR POUR " << avion->getIdentifiant() << " PAR L'AEROPORT DE " << this->m_identifiant << std::endl;
-  }
-  return atterri;
-}*/
 
 void Aeroport::centreApproche(bool &stop_thread) {
   Ccr::coutMutex.lock();

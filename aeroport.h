@@ -1,5 +1,8 @@
 #pragma once
+#include <SFML/Graphics.hpp>
 #include <string>
+#include <utility>
+#include<iostream>
 #include "struct.h"
 #include "avion.h"
 #include "tourDeControle.h"
@@ -31,7 +34,6 @@ public:
     int getplaceDisponible() const;
     void setplaceDisponible(int);
     bool autorisationPourAtterrir() const;
-    //bool atterrir(Avion*);
     void centreApproche(bool&);
     static void threadApp(Aeroport*, bool&);
 };
