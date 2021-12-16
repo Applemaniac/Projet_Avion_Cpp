@@ -1,6 +1,7 @@
 #include <map>
 #include <chrono>
 #include <iostream>
+#include <random>
 
 #include "avion.h"
 
@@ -16,10 +17,8 @@ Avion::Avion() : m_callApp(true),
                  m_depart(new Aeroport),
                  m_arrive(new Aeroport),
                  m_vitesse(100),
-                 m_dateDebut(time(0)),
-                 m_deltaDate(time(0)),
-                 m_distance(0),
-                 m_essence(100){
+                 m_deltaDate(time(nullptr)),
+                 m_distance(0){
 
   setPosition(this->m_position, m_depart->getPosition()->x, m_depart->getPosition()->y, m_depart->getPosition()->z);
 }
@@ -33,18 +32,20 @@ Avion::Avion(Aeroport *depart, Aeroport *arrive, bool &stop) :
                                                    m_position(createPosition(depart->getPosition()->x, depart->getPosition()->y, depart->getPosition()->z)),
                                                    m_depart(depart),
                                                    m_arrive(arrive),
-                                                   m_vitesse(900),
-                                                   m_dateDebut(time(0)),
-                                                   m_deltaDate(time(0)),
-                                                   m_distance(getDistance(depart->getPosition(), arrive->getPosition())),
-                                                   m_essence(100){
+                                                   m_vitesse(300),
+                                                   m_deltaDate(time(nullptr)),
+                                                   m_distance(getDistance(depart->getPosition(), arrive->getPosition())){
   this->m_thread = std::thread(flyThread, this, std::ref(m_stop_thread));
 }
 
 
 std::string Avion::createIdentifiant() {
-  int nb = rand() % 899 + 100;
-  int aleatoire = rand() % 10 + 1;
+  std::random_device rd;
+  std::mt19937 mt(rd());
+  std::uniform_int_distribution<int> dist(100, 999);
+  std::uniform_int_distribution<int> distribution(1, 9);
+  int nb = dist(mt);
+  int aleatoire = distribution(mt);
   std::string code;
 
   switch (aleatoire) {
@@ -115,13 +116,13 @@ void Avion::atterrir(Aeroport *aeroport) {
 
 void Avion::fly(bool &stop_thread) {
   while (!stop_thread){
-    std::time_t now = time(0);
+    std::time_t now = time(nullptr);
     std::time_t duree = now - this->m_deltaDate; //en s
-    float deltaDistance = (this->m_vitesse * duree) / 1000;
+    float deltaDistance = (this->m_vitesse * (float) duree) / 1000;
     this->m_deltaDate = now;
     this->m_position->z = getUniqueZ(this->getIdentifiant());
 
-    if (abs(this->m_arrive->getPosition()->x - this->m_position->x) < RADIUS_APP && abs(this->getPosition()->y - this->m_position->y) < RADIUS_APP && this->m_voler && !this->m_callApp){
+    if (std::abs(this->m_arrive->getPosition()->x - this->m_position->x) < RADIUS_APP && std::abs(this->getPosition()->y - this->m_position->y) < RADIUS_APP && this->m_voler && !this->m_callApp){
       Ccr::coutMutex.lock();
       std::cout << this->m_identifiant << " -> APP de " << this->m_arrive->getIdentifiant() << " : Je rentre dans votre zone." << std::endl;
       Ccr::coutMutex.unlock();
@@ -139,7 +140,7 @@ void Avion::fly(bool &stop_thread) {
     }else if (m_voler){
       getTrajectoire(this->m_position, this->m_arrive->getPosition(), deltaDistance, this->m_distance);
       Ccr::coutMutex.lock();
-      std::cout << "x : " << this->m_position->x << " y = " << this->m_position->y << " z = " << this->m_position->z << std::endl;
+      std::cout << this->m_identifiant <<" : {" << this->m_position->x << "; " << this->m_position->y << "; " << this->m_position->z <<" }" << std::endl;
       Ccr::coutMutex.unlock();
     }else{
       // Zone de standby, pour ne pas tuer le thread...
@@ -173,7 +174,6 @@ Aeroport *Avion::getDestination() {
 
 void Avion::setApp(bool value) {
   this->m_callApp = value;
-  int a = 0;
 }
 
 void Avion::decoler(Aeroport *aeroport) {
@@ -189,10 +189,6 @@ void Avion::decoler(Aeroport *aeroport) {
   this->m_stop_thread = false;
   this->m_callApp = false;
   this->m_voler = true;
-}
-
-bool Avion::getFaireDesRonds() const{
-  return m_faireDesRonds;
 }
 
 void Avion::setFaireDesRonds(bool value) {

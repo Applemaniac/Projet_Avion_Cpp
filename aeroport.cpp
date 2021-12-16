@@ -29,13 +29,13 @@ std::string Aeroport::getIdentifiant() {
   return this->m_identifiant;
 }
 
-bool Aeroport::autorisationPourAtterrir() const {
+/*bool Aeroport::autorisationPourAtterrir() const {
   bool retour = true;
   if (this->m_placesDisponible <= 0){
       retour = false;
   }
   return retour;
-}
+}*/
 
 void Aeroport::centreApproche(bool &stop_thread) {
   Ccr::coutMutex.lock();
@@ -85,4 +85,3 @@ int Aeroport::getplaceDisponible() const {
 void Aeroport::setplaceDisponible(int value) {
   this->m_placesDisponible = value;
 }
-

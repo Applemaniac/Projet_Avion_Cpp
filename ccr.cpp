@@ -2,10 +2,9 @@
 #include <iostream>
 
 std::mutex Ccr::coutMutex;
-std::mutex Ccr::avionsMutex;
 std::vector<Avion*> Ccr::avions;
 
-Ccr::Ccr(){
+Ccr::Ccr() : m_stopThread(false){
   this->m_thread = std::thread(CcrThread, this, std::ref(m_stopThread));
 }
 

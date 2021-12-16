@@ -8,6 +8,12 @@
 #include "tourDeControle.h"
 #include "ccr.h"
 
+#define WINDOW_SIZE_X 621
+#define WINDOW_SIZE_Y 621
+#define WORLD_LIMIT_X 10.0
+#define WORLD_LIMIT_Y 10.0
+
+
 class Avion;
 class TourDeControle;
 
@@ -30,10 +36,10 @@ public:
     Position* getPosition();
     std::string getIdentifiant();
     std::vector<Avion*>& getAvions();
-    int getCapacite() const;
-    int getplaceDisponible() const;
+    [[nodiscard]] int getCapacite() const;
+    [[nodiscard]] int getplaceDisponible() const;
     void setplaceDisponible(int);
-    bool autorisationPourAtterrir() const;
+    //bool autorisationPourAtterrir() const;
     void centreApproche(bool&);
     static void threadApp(Aeroport*, bool&);
 };

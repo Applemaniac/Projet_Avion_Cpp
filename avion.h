@@ -8,14 +8,13 @@
 #include "aeroport.h"
 #include "ccr.h"
 
-#define RADIUS_APP 1
+#define RADIUS_APP 0.1
 
 class Aeroport;
 
 class Avion {
 private:
     std::thread m_thread;
-    std::mutex globalMutex;
     bool m_stop_thread;
     bool m_callApp;
     bool m_faireDesRonds;
@@ -25,10 +24,8 @@ private:
     Aeroport *m_depart;
     Aeroport *m_arrive;
     float m_vitesse; // en m/s
-    time_t m_dateDebut;
     time_t m_deltaDate;
     float m_distance; // en km/h
-    float m_essence;
     void fly(bool&);
 public:
     Avion();
@@ -41,9 +38,8 @@ public:
     void atterrir(Aeroport*);
     void decoler(Aeroport*);
     static void flyThread(Avion*, bool&);
-    bool getApp() const;
+    [[nodiscard]] bool getApp() const;
     void setApp(bool);
-    bool getFaireDesRonds() const;
     void setFaireDesRonds(bool);
 };
 
