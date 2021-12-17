@@ -1,5 +1,5 @@
 #include <string>
-#include "struct.h"
+#include "../headers/struct.h"
 
 void setPosition(Position *pos, float x, float y, float z){
   pos->x = x;

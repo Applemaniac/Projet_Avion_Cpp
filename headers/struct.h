@@ -1,5 +1,6 @@
 #pragma once
 #include <cmath>
+#include <string>
 
 typedef struct position {
     float x;

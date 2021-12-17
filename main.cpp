@@ -1,4 +1,4 @@
-#include "main.h"
+#include "headers/main.h"
 
 #include <utility>
 
@@ -103,20 +103,20 @@ int main(){
   bool threadBordeaux = false;
   bool threadCcr = false;
 
-  auto *lille = new Aeroport_avec_sprite("Lille", {3, 3, 0}, 10, threadLille);
+  auto *rouen = new Aeroport_avec_sprite("Rouen", {3, 3, 0}, 10, threadLille);
   auto *marseille = new Aeroport_avec_sprite("Marseille", {7, 7, 0}, 10, threadMarseille);
   auto *metz = new Aeroport_avec_sprite("Metz", {6.8, 3, 0}, 2, threadMetz);
   auto *bordeaux = new Aeroport_avec_sprite("Bordeaux", {3.3, 6, 0}, 5, threadBordeaux);
 
-  aeroport.push_back(lille);
+  aeroport.push_back(rouen);
   aeroport.push_back(marseille);
   aeroport.push_back(metz);
   aeroport.push_back(bordeaux);
 
   bool stop_thread = false;
 
-  auto *avion = new Avion_avec_sprite(lille, marseille, stop_thread, planeTexture);
-  auto *avion1 = new Avion_avec_sprite(marseille, lille, stop_thread, planeTexture);
+  auto *avion = new Avion_avec_sprite(rouen, marseille, stop_thread, planeTexture);
+  auto *avion1 = new Avion_avec_sprite(marseille, rouen, stop_thread, planeTexture);
   auto *avion2 = new Avion_avec_sprite(metz, bordeaux, stop_thread, planeTexture);
   auto *avion3 = new Avion_avec_sprite(bordeaux, metz, stop_thread, planeTexture);
 
@@ -141,7 +141,7 @@ int main(){
   threadMetz = true;
   threadBordeaux = true;
 
-  delete lille;
+  delete rouen;
   delete marseille;
   delete ccr;
   std::cout << "Finish\n";
